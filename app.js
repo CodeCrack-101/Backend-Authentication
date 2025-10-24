@@ -1,48 +1,69 @@
+// ------------------------
+// Import dependencies
+// ------------------------
 const express = require('express');
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 const path = require('path');
 const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const usermodel = require('./models/user');
 const postmodel = require('./models/post');
+
+// ------------------------
+// Initialize app
+// ------------------------
+dotenv.config(); // Load .env variables
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || "shhhh";
 
-// Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/i-NoteBook', {
+// ------------------------
+// MongoDB Connection
+// ------------------------
+if (!process.env.MONGO_URI) {
+  console.error("❌ MONGO_URI is not defined in .env file!");
+  process.exit(1);
+}
+
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
 .then(() => {
-  console.log('MongoDB connected');
-  app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-  });
+  console.log('✅ MongoDB connected successfully');
+  app.listen(port, () => console.log(`🚀 Server running at http://localhost:${port}`));
 })
 .catch(err => {
-  console.error('MongoDB connection error:', err);
+  console.error('❌ MongoDB connection error:', err.message);
   process.exit(1);
 });
 
-// Set EJS as view engine
+// ------------------------
+// App configuration
+// ------------------------
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
+// ------------------------
 // Middleware
+// ------------------------
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Auth middleware
+// ------------------------
+// Auth Middleware
+// ------------------------
 const isLogin = (req, res, next) => {
   const token = req.cookies.token;
   if (!token) return res.redirect("/login");
+
   try {
-    const data = jwt.verify(token, JWT_SECRET);
-    req.user = data;
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded;
     next();
   } catch (err) {
     res.clearCookie("token");
@@ -50,33 +71,71 @@ const isLogin = (req, res, next) => {
   }
 };
 
+// ------------------------
 // Routes
+// ------------------------
 
 // Home
-app.get('/', (req, res) => {
-  res.render('login');
-});
+app.get('/', (req, res) => res.render('login'));
 
 // Login page
-app.get('/login', (req, res) => {
-  res.render('login');
-});
+app.get('/login', (req, res) => res.render('login'));
 
-// Register page
-app.get('/register', (req, res) => {
-  res.render('login');
-});
+// Register page (same view)
+app.get('/register', (req, res) => res.render('login'));
 
-//succes
+// Success page
 app.get('/succes', (req, res) => {
-  const token = req.cookies.token;
-  const decoded = jwt.verify(token, JWT_SECRET);
-  res.render('succes', { user: decoded });
+  try {
+    const token = req.cookies.token;
+    const decoded = jwt.verify(token, JWT_SECRET);
+    res.render('succes', { user: decoded });
+  } catch (err) {
+    res.clearCookie("token");
+    res.redirect("/login");
+  }
 });
 
+// ------------------------
+// Register Logic
+// ------------------------
+app.post('/register', async (req, res) => {
+  const { username, email, password, age } = req.body;
 
+  try {
+    if (!username || !email || !password || !age) {
+      return res.status(400).send("All fields are required!");
+    }
 
-// Login logic
+    const existingUser = await usermodel.findOne({ email });
+    if (existingUser) return res.status(400).send("User already exists");
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await usermodel.create({
+      username,
+      email,
+      age,
+      password: hashedPassword,
+    });
+
+    const token = jwt.sign(
+      { email: user.email, userid: user._id, username: user.username, age: user.age },
+      JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.cookie("token", token, { httpOnly: true });
+    res.redirect('/succes');
+  } catch (err) {
+    console.error("Error creating user:", err);
+    res.status(500).send("Server error");
+  }
+});
+
+// ------------------------
+// Login Logic
+// ------------------------
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -87,7 +146,12 @@ app.post('/login', async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).send("Invalid email or password");
 
-    const token = jwt.sign({ email: user.email, userid: user._id }, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign(
+      { email: user.email, userid: user._id },
+      JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
     res.cookie("token", token, { httpOnly: true });
     res.redirect('/profile');
   } catch (err) {
@@ -96,44 +160,12 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Register logic
-app.post('/register', async (req, res) => {
-  const { username, email, password, age } = req.body;
-
-  try {
-    const existingUser = await usermodel.findOne({ email });
-    if (existingUser) return res.status(400).send("User already exists");
-
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const user = await usermodel.create({
-      username,
-      email,
-      age,
-      password: hashedPassword,
-    });
-
-    const tokenPayload = { 
-      email: user.email, 
-      userid: user._id,
-      username: user.username,
-      age: user.age
-    };
-
-    const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '1h' });
-
-    res.cookie("token", token, { httpOnly: true });
-    res.redirect('/succes');
-  } catch (err) {
-    console.error("Error creating user:", err);
-    res.status(500).send("Server error");
-  }
-});
-
-// Profile page (protected)
+// ------------------------
+// Profile Page (Protected)
+// ------------------------
 app.get('/profile', isLogin, async (req, res) => {
   const { email } = req.user;
+
   try {
     const user = await usermodel.findOne({ email }).populate('posts');
     if (!user) return res.status(404).send("User not found");
@@ -144,7 +176,9 @@ app.get('/profile', isLogin, async (req, res) => {
   }
 });
 
-// Create post on profile page (protected)
+// ------------------------
+// Create Post (Protected)
+// ------------------------
 app.post('/dash', isLogin, async (req, res) => {
   try {
     const { content } = req.body;
@@ -152,12 +186,10 @@ app.post('/dash', isLogin, async (req, res) => {
       return res.status(400).send("Post content cannot be empty");
     }
 
-    const email = req.user.email;
-    const user = await usermodel.findOne({ email });
+    const user = await usermodel.findById(req.user.userid);
     if (!user) return res.status(404).send("User not found");
 
     const post = await postmodel.create({ content, user: user._id });
-
     user.posts.push(post._id);
     await user.save();
 
@@ -168,25 +200,17 @@ app.post('/dash', isLogin, async (req, res) => {
   }
 });
 
-// Logout
-app.get('/logout', (req, res) => {
-  res.clearCookie("token");
-  res.redirect("/login");
-});
-
+// ------------------------
+// Delete Post (Protected)
+// ------------------------
 app.post('/delete/:id', isLogin, async (req, res) => {
   try {
     const postId = req.params.id;
     const post = await postmodel.findById(postId);
     if (!post) return res.status(404).send("Post not found");
 
-    // Delete from Post collection
     await postmodel.findByIdAndDelete(postId);
-
-    // Remove from user's posts array
-    await usermodel.findByIdAndUpdate(post.user, {
-      $pull: { posts: postId }
-    });
+    await usermodel.findByIdAndUpdate(post.user, { $pull: { posts: postId } });
 
     res.redirect('/profile');
   } catch (err) {
@@ -195,6 +219,9 @@ app.post('/delete/:id', isLogin, async (req, res) => {
   }
 });
 
+// ------------------------
+// Edit Post (Protected)
+// ------------------------
 app.post('/edit/:id', isLogin, async (req, res) => {
   try {
     const postId = req.params.id;
@@ -203,7 +230,6 @@ app.post('/edit/:id', isLogin, async (req, res) => {
     const post = await postmodel.findById(postId);
     if (!post) return res.status(404).send("Post not found");
 
-    // Optional: check if user is owner
     if (post.user.toString() !== req.user.userid) {
       return res.status(403).send("Unauthorized to edit this post");
     }
@@ -216,4 +242,19 @@ app.post('/edit/:id', isLogin, async (req, res) => {
     console.error("Edit error:", err);
     res.status(500).send("Failed to update post");
   }
+});
+
+// ------------------------
+// Logout
+// ------------------------
+app.get('/logout', (req, res) => {
+  res.clearCookie("token");
+  res.redirect("/login");
+});
+
+// ------------------------
+// Handle unknown routes
+// ------------------------
+app.use((req, res) => {
+  res.status(404).send("404 - Page not found");
 });
