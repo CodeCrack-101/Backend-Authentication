@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Profile</title>
+    <style>
+      .disabled-link {
+  pointer-events: none; /* disables clicking */
+  color: gray;          /* gray out the text */
+  cursor: default;      /* change cursor to default */
+  text-decoration: none;
+}
+
+    </style>
+  </head>
+  <body>
+    <a href="/logout">
+      <button>Logout</button>
+    </a>
+    <h1>Hello, <%= user.username %></h1>
+    <h5>Hre You Can Create a POST</h5>
+    <form  method="POST">
+      <textarea
+        name="content"
+        id=""
+        placeholder="What's On Your Mind?"
+        style="resize: none"
+      ></textarea>
+      <input type="submit" value="SUbmit" />
+    </form>
+    <div class="container">
+        <h1>Your Posts</h1>
+    <div>
+  <% user.posts.forEach(function(post) { %>
+    <div class="post">
+      <p><%= post.content %></p>
+      <small>
+        <%= Array.isArray(post.likes) ? post.likes.length : 0 %> Likes
+      </small>
+      <div class="actions">
+        <a href="/edit/<%= post._id %>" class="disabled-link">Edit</a>
+        <a href="/like/<%= post._id %>" class="disabled-link">Like</a>
+        <a href="/delete/<%= post._id %>" class="disabled-link">Delete</a>
+
+      </div>
+    </div>
+  <% }); %>
+</div>
+
+      
+  </body>
+</html>

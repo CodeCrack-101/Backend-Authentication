@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | <%= user.name %></title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+ <link rel="stylesheet" href="stylesheet/style.css">
+</head>
+<body>
+  <script src="https://cdn.lordicon.com/lordicon.js"></script>
+  <div class="container">
+    <header class="header">
+      <div class="user-info">
+        <h1>Welcome Back, <span><%= user.username %></span>
+          <lord-icon
+          src="https://cdn.lordicon.com/shcfcebj.json"
+          trigger="hover"
+          colors="primary:#dc2626,secondary:#dc2626"
+          stroke="bold"
+          style="width:50px;height:40px;padding-top: 5px;">
+      </lord-icon></h1>
+        <h2><%= user.email %></h2>
+        <h4 id="post-date"></h4>
+        </div>
+        <div class="logout-wrapper">
+          <a href="/logout" className="logout-icon-link" title="Logout">
+            <lord-icon
+              src="https://cdn.lordicon.com/vfiwitrm.json"
+              trigger="hover"
+              stroke="light"
+              style=width:50px;height:50px
+            ></lord-icon>
+          </a>
+        </div>
+        
+    </header>
+
+    <div class="card">
+      <h3 class="card-title">Create A New Note</h3>
+      <form method="POST" action="/dash">
+        <textarea
+          name="content"
+          placeholder="What's on your mind?"
+          required
+        ></textarea>
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Save
+            <lord-icon
+    src="https://cdn.lordicon.com/jectmwqf.json"
+    trigger="hover"
+    stroke="light"
+    style="width:40px;height:30px">
+</lord-icon>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="card">
+      <h3 class="card-title">Your Notes</h3>
+
+      <% if (user.posts && user.posts.length > 0) { %>
+        <% user.posts.forEach(post => { %>
+          <div class="post">
+            <div class="post-content"><%= post.content %></div>
+            <div class="post-meta">
+              Posted on <%= new Date(post.createdAt).toLocaleDateString() %>
+            </div>
+            
+            <div class="actions">
+              <button class="btn btn-outline btn-sm edit-btn" type="button" data-postid="<%= post._id %>">
+                <lord-icon
+                src="https://cdn.lordicon.com/fikcyfpp.json"               trigger="hover"
+                stroke="light"
+                style="width:40px;height:30px">
+              </lord-icon>
+              </button>
+              <form action="/delete/<%= post._id %>" method="POST" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this post?');">
+                  <lord-icon
+                  src="https://cdn.lordicon.com/hwjcdycb.json"
+                  trigger="hover"
+                  stroke="light"
+                  style="width:40px;height:30px">
+                </lord-icon>
+                </button>
+              </form>
+            </div>
+          
+            <form class="edit-form" action="/edit/<%= post._id %>" method="POST" style="display:none;">
+              <textarea name="content" required><%= post.content %></textarea>
+              <div class="actions">
+                <button type="submit" class="btn btn-primary btn-sm">    
+                  <lord-icon
+                  src="https://cdn.lordicon.com/fjvfsqea.json"                
+                   trigger="hover"
+                  stroke="light"
+                  style="width:40px;height:30px">
+                </lord-icon>
+              </button>
+                <button type="button" class="btn btn-outline btn-sm cancel-edit">   <lord-icon
+                  src="https://cdn.lordicon.com/gfxbanka.json"                   trigger="hover"
+                  stroke="light"
+                  style="width:40px;height:30px">
+                </lord-icon></button>
+              </div>
+            </form>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <div class="empty-state">
+          <p>You haven't created any posts yet.</p>
+          <p>Share your thoughts with the world!</p>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <script src="/javascripts/script.js" > 
+  </script>
+  <script>
+  const options = {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+};
+ const createdAt = new Date();
+    document.getElementById('post-date').innerText = createdAt.toLocaleDateString('en-US', options);
+  </script>
+</body>
+</html>
