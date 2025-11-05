@@ -21,21 +21,22 @@ const JWT_SECRET = process.env.JWT_SECRET || "shhhh";
 const PORT = process.env.PORT || 3000;
 
 // ------------------------
-// MongoDB Connection (Safe for Render & Atlas)
+// MongoDB Connection (Render & Atlas Safe)
 // ------------------------
 let isDBConnected = false;
 
 async function connectDB() {
   if (isDBConnected) return;
   if (!process.env.MONGO_URI) {
-    console.error("❌ MONGO_URI missing in .env");
+    console.error("❌ MONGO_URI missing in Render ENV");
     process.exit(1);
   }
 
   try {
     await mongoose.connect(process.env.MONGO_URI, {
-      serverSelectionTimeoutMS: 15000
+      serverSelectionTimeoutMS: 15000,
     });
+
     isDBConnected = true;
     console.log("✅ MongoDB Connected Successfully");
   } catch (err) {
@@ -52,13 +53,13 @@ connectDB();
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // ------------------------
-// JWT Auth Middleware
+// JWT Middleware
 // ------------------------
 const isLogin = (req, res, next) => {
   const token = req.cookies.token;
@@ -78,24 +79,16 @@ const isLogin = (req, res, next) => {
 // Routes
 // ------------------------
 
-// Default
-app.get('/', (req, res) => res.render('login'));
-app.get('/login', (req, res) => res.render('login'));
-app.get('/register', (req, res) => res.render('login'));
+// Health check route for Render
+app.get("/health", (req, res) => res.send("✅ Server is healthy"));
 
-// Success Page
-app.get('/succes', (req, res) => {
-  try {
-    const decoded = jwt.verify(req.cookies.token, JWT_SECRET);
-    res.render('succes', { user: decoded });
-  } catch {
-    res.clearCookie("token");
-    res.redirect("/login");
-  }
-});
+// Default
+app.get("/", (req, res) => res.render("login"));
+app.get("/login", (req, res) => res.render("login"));
+app.get("/register", (req, res) => res.render("login"));
 
 // Register
-app.post('/register', async (req, res) => {
+app.post("/register", async (req, res) => {
   const { username, email, password, age } = req.body;
 
   if (!username || !email || !password || !age)
@@ -109,11 +102,22 @@ app.post('/register', async (req, res) => {
 
   const token = jwt.sign({ email: user.email, userid: user._id }, JWT_SECRET);
   res.cookie("token", token, { httpOnly: true });
-  res.redirect('/succes');
+  res.redirect("/succes");
+});
+
+// Success Page
+app.get("/succes", (req, res) => {
+  try {
+    const decoded = jwt.verify(req.cookies.token, JWT_SECRET);
+    res.render("succes", { user: decoded });
+  } catch {
+    res.clearCookie("token");
+    res.redirect("/login");
+  }
 });
 
 // Login
-app.post('/login', async (req, res) => {
+app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   const user = await usermodel.findOne({ email });
@@ -124,31 +128,29 @@ app.post('/login', async (req, res) => {
 
   const token = jwt.sign({ email: user.email, userid: user._id }, JWT_SECRET);
   res.cookie("token", token, { httpOnly: true });
-  res.redirect('/profile');
+  res.redirect("/profile");
 });
 
 // Profile
-app.get('/profile', isLogin, async (req, res) => {
+app.get("/profile", isLogin, async (req, res) => {
   const user = await usermodel.findOne({ email: req.user.email }).populate("posts");
-  res.render('profile', { user });
+  res.render("profile", { user });
 });
 
 // Logout
-app.get('/logout', (req, res) => {
+app.get("/logout", (req, res) => {
   res.clearCookie("token");
   res.redirect("/login");
 });
 
-// 404
+// 404 Page
 app.use((req, res) => res.status(404).send("404 - Page Not Found"));
 
 // ------------------------
-// Server Listen
+// Server Listen for Render
 // ------------------------
-if (process.env.NODE_ENV !== "production") {
-  app.listen(PORT, () => {
-    console.log(`✅ Server running on port ${PORT}`);
-  });
-}
+app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
+});
 
 module.exports = app;
