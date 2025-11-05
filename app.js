@@ -149,7 +149,11 @@ app.use((req, res) => res.status(404).send("404 - Page not found"));
 // ------------------------
 // Export app (Do NOT listen here)
 // ------------------------
-module.exports = app;
+if (process.env.NODE_ENV !== "production") {
+  const port = process.env.PORT || 3000;
+  app.listen(port, () => {
+    console.log("✅ Server running on port", port);
+  });
+}
 
-// Local dev only
 module.exports = app;
