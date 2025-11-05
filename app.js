@@ -152,6 +152,4 @@ app.use((req, res) => res.status(404).send("404 - Page not found"));
 module.exports = app;
 
 // Local dev only
-if (require.main === module) {
-  app.listen(port, () => console.log(`🚀 Running http://localhost:${port}`));
-}
+module.exports = app;
