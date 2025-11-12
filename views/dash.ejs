@@ -4,21 +4,279 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard | <%= user.username %></title>
+
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/public/stylesheet/style.css">
-</head>
-<body>
+
+  <!-- Lottie Player -->
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
   <script src="https://cdn.lordicon.com/lordicon.js"></script>
 
+  <style>
+/* ---------------------- GLOBAL RESET ---------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  font-family: "Inter", sans-serif;
+  background: linear-gradient(135deg, #f9fafb, #e5e7eb);
+  color: #1f2937;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem;
+}
+
+/* ---------------------- CONTAINER ---------------------- */
+.container {
+  background: #ffffff;
+  width: 100%;
+  max-width: 950px;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem;
+  animation: fadeIn 0.6s ease-in-out;
+  position: relative;
+}
+
+/* ---------------------- HEADER ---------------------- */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #f3f4f6;
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+}
+
+.user-info h1 {
+  font-size: 1.6rem;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-info span {
+  color: #dc2626;
+}
+
+.user-info h2 {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+#post-date {
+  font-size: 0.9rem;
+  color: #9ca3af;
+  margin-top: 0.3rem;
+}
+
+.logout-wrapper a {
+  transition: transform 0.3s ease;
+}
+.logout-wrapper a:hover {
+  transform: rotate(10deg) scale(1.1);
+}
+
+/* ---------------------- LOTTIE ANIMATION ---------------------- */
+lottie-player {
+  display: block;
+  margin: 0 auto 1.5rem auto;
+  width: 140px;
+  height: 140px;
+  animation: float 3s ease-in-out infinite;
+}
+
+/* ---------------------- CARD STYLES ---------------------- */
+.card {
+  background: #f9fafb;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.card-title {
+  font-size: 1.3rem;
+  color: #111827;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* ---------------------- TEXTAREA ---------------------- */
+textarea {
+  width: 100%;
+  min-height: 90px;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.8rem;
+  padding: 0.8rem;
+  font-size: 1rem;
+  outline: none;
+  resize: vertical;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+textarea:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.15);
+}
+
+/* ---------------------- BUTTONS ---------------------- */
+.btn {
+  border: none;
+  border-radius: 0.8rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: #dc2626;
+  color: white;
+}
+.btn-primary:hover {
+  background: #b91c1c;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid #9ca3af;
+  color: #374151;
+}
+.btn-outline:hover {
+  border-color: #dc2626;
+  color: #dc2626;
+}
+
+.btn-danger {
+  background: #ef4444;
+  color: white;
+}
+.btn-danger:hover {
+  background: #b91c1c;
+}
+
+.btn-sm {
+  font-size: 0.9rem;
+  padding: 0.4rem 0.8rem;
+}
+
+/* ---------------------- POSTS ---------------------- */
+.post {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  position: relative;
+  transition: box-shadow 0.3s ease;
+}
+.post:hover {
+  box-shadow: 0 4px 10px rgba(220, 38, 38, 0.1);
+}
+
+.post-content {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #374151;
+}
+
+.post-meta {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  margin-top: 0.4rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+/* ---------------------- EMPTY STATE ---------------------- */
+.empty-state {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  color: #6b7280;
+}
+.empty-state p:first-child {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+/* ---------------------- ANIMATIONS ---------------------- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* ---------------------- RESPONSIVE ---------------------- */
+@media (max-width: 600px) {
+  .header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .logout-wrapper {
+    margin-top: 1rem;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  lottie-player {
+    width: 120px;
+    height: 120px;
+  }
+}
+  </style>
+</head>
+
+<body>
   <div class="container">
+    <!-- Lottie animation -->
+    <lottie-player
+      src="/user.json"
+      background="transparent"
+      speed="1"
+      loop
+      autoplay
+    ></lottie-player>
+
+    <!-- HEADER -->
     <header class="header">
       <div class="user-info">
-        <h1>Welcome Back, <span><%= user.username %></span>
+        <h1>
+          Welcome Back, <span><%= user.username %></span>
           <lord-icon src="https://cdn.lordicon.com/shcfcebj.json"
             trigger="hover"
             colors="primary:#dc2626,secondary:#dc2626"
-            stroke="bold"
-            style="width:50px;height:40px;padding-top:5px;">
+            style="width:50px;height:40px;">
           </lord-icon>
         </h1>
         <h2><%= user.email %></h2>
@@ -28,14 +286,13 @@
         <a href="/logout" title="Logout">
           <lord-icon src="https://cdn.lordicon.com/vfiwitrm.json"
             trigger="hover"
-            stroke="light"
-            style="width:50px;height:50px">
+            style="width:50px;height:50px;">
           </lord-icon>
         </a>
       </div>
     </header>
 
-    <!-- Create Note -->
+    <!-- CREATE NOTE CARD -->
     <div class="card">
       <h3 class="card-title">Create A New Note</h3>
       <form method="POST" action="/dash">
@@ -45,18 +302,16 @@
             Save
             <lord-icon src="https://cdn.lordicon.com/jectmwqf.json"
               trigger="hover"
-              stroke="light"
-              style="width:40px;height:30px">
+              style="width:40px;height:30px;">
             </lord-icon>
           </button>
         </div>
       </form>
     </div>
 
-    <!-- Display Notes -->
+    <!-- DISPLAY NOTES -->
     <div class="card">
       <h3 class="card-title">Your Notes</h3>
-
       <% if (user.posts && user.posts.length > 0) { %>
         <% user.posts.forEach(post => { %>
           <div class="post">
@@ -70,8 +325,7 @@
               <button class="btn btn-outline btn-sm edit-btn" type="button" data-postid="<%= post._id %>">
                 <lord-icon src="https://cdn.lordicon.com/fikcyfpp.json"
                   trigger="hover"
-                  stroke="light"
-                  style="width:40px;height:30px">
+                  style="width:40px;height:30px;">
                 </lord-icon>
               </button>
 
@@ -81,29 +335,26 @@
                   onclick="return confirm('Are you sure you want to delete this post?');">
                   <lord-icon src="https://cdn.lordicon.com/hwjcdycb.json"
                     trigger="hover"
-                    stroke="light"
-                    style="width:40px;height:30px">
+                    style="width:40px;height:30px;">
                   </lord-icon>
                 </button>
               </form>
             </div>
 
-            <!-- Hidden Edit Form -->
+            <!-- Edit Form -->
             <form class="edit-form" action="/edit/<%= post._id %>" method="POST" style="display:none;">
               <textarea name="content" required><%= post.content %></textarea>
               <div class="actions">
                 <button type="submit" class="btn btn-primary btn-sm">
                   <lord-icon src="https://cdn.lordicon.com/fjvfsqea.json"
                     trigger="hover"
-                    stroke="light"
-                    style="width:40px;height:30px">
+                    style="width:40px;height:30px;">
                   </lord-icon>
                 </button>
                 <button type="button" class="btn btn-outline btn-sm cancel-edit">
                   <lord-icon src="https://cdn.lordicon.com/gfxbanka.json"
                     trigger="hover"
-                    stroke="light"
-                    style="width:40px;height:30px">
+                    style="width:40px;height:30px;">
                   </lord-icon>
                 </button>
               </div>
@@ -119,11 +370,13 @@
     </div>
   </div>
 
+  <!-- SCRIPT -->
   <script>
+    // Display current date
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById('post-date').innerText = new Date().toLocaleDateString('en-US', options);
 
-    // Toggle edit forms
+    // Edit form toggle
     document.querySelectorAll('.edit-btn').forEach(btn => {
       btn.addEventListener('click', e => {
         const post = e.target.closest('.post');
@@ -131,6 +384,7 @@
         post.querySelector('.post-content').style.display = 'none';
       });
     });
+
     document.querySelectorAll('.cancel-edit').forEach(btn => {
       btn.addEventListener('click', e => {
         const post = e.target.closest('.post');

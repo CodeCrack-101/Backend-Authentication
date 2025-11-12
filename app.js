@@ -9,6 +9,8 @@ const jwt = require('jsonwebtoken');
 const usermodel = require('./models/user');
 const postmodel = require('./models/post');
 
+
+
 // ------------------------
 // Initialization
 // ------------------------
@@ -75,7 +77,37 @@ app.get("/", (req, res) => res.render("login"));
 app.get("/login", (req, res) => res.render("login"));
 app.get("/register", (req, res) => res.render("login"));
 
-// Register
+app.post("/register", async (req, res) => {
+  try {
+    console.log("Received body:", req.body); // debug line
+
+    const { username, age, email, password } = req.body;
+
+    if (!username || !age || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: "Please enter a valid email address" });
+    }
+
+    const existingUser = await usermodel.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ message: "User already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new usermodel({ username, age, email, password: hashedPassword });
+
+    await newUser.save();
+    return res.redirect("/succes");
+
+  } catch (error) {
+    console.error("Error during registration:", error);
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
 
 
 // Success Page
