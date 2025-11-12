@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard | <%= user.username %></title>
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Lottie Player -->
   <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
   <script src="https://cdn.lordicon.com/lordicon.js"></script>
 
@@ -19,10 +17,9 @@
   padding: 0;
   box-sizing: border-box;
 }
-
 html, body {
   font-family: "Inter", sans-serif;
-  background: linear-gradient(135deg, #f9fafb, #e5e7eb);
+  background: #f4f7fa; /* Slightly darker background for contrast */
   color: #1f2937;
   min-height: 100vh;
   display: flex;
@@ -37,7 +34,6 @@ html, body {
   width: 100%;
   max-width: 950px;
   border-radius: 1.5rem;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   padding: 2.5rem;
   animation: fadeIn 0.6s ease-in-out;
   position: relative;
@@ -48,93 +44,136 @@ html, body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 2px solid #f3f4f6;
-  padding-bottom: 1rem;
-  margin-bottom: 2rem;
+  border-bottom: 2px solid #e5e7eb; /* Lighter divider */
+  padding-bottom: 1.5rem;
+  margin-bottom: 2.5rem;
 }
-
 .user-info h1 {
-  font-size: 1.6rem;
+  font-size: 2rem;
   color: #111827;
+  font-family: 'Times New Roman', Times, serif;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  font-weight: 700; /* Bolder name */
 }
-
 .user-info span {
   color: #dc2626;
 }
-
 .user-info h2 {
   font-size: 1rem;
   font-weight: 500;
   color: #6b7280;
-  margin-top: 0.25rem;
+  margin-top: 0.5rem;
 }
-
 #post-date {
   font-size: 0.9rem;
   color: #9ca3af;
-  margin-top: 0.3rem;
+  margin-top: 0.5rem;
+}
+/* ---------------------- LOGOUT WRAPPER ---------------------- */
+.logout-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .logout-wrapper a {
-  transition: transform 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #dc2626;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 0.7rem 1.4rem;
+  border-radius: 0.8rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
 }
+
 .logout-wrapper a:hover {
-  transform: rotate(10deg) scale(1.1);
+  background-color: #b91c1c;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(220, 38, 38, 0.3);
 }
+
 
 /* ---------------------- LOTTIE ANIMATION ---------------------- */
 lottie-player {
   display: block;
-  margin: 0 auto 1.5rem auto;
-  width: 140px;
-  height: 140px;
   animation: float 3s ease-in-out infinite;
+}
+.lottie-user {
+  width: 50px;
+  height: 50px;
+}
+.lottie-card {
+  width: 80px;
+  height: 140px;
 }
 
 /* ---------------------- CARD STYLES ---------------------- */
 .card {
-  background: #f9fafb;
+  background: #ffffff;
   border-radius: 1rem;
   padding: 1.5rem;
   margin-bottom: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  transition: 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Softer shadow */
+  border: 1px solid #f3f4f6;
+  transition: all 0.3s ease;
 }
-
+.card-create {
+  background: #f9fafb; /* Lighter background for the create card */
+}
 .card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
-
 .card-title {
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   color: #111827;
-  font-weight: 600;
-  margin-bottom: 1rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px dashed #e5e7eb;
+  padding-bottom: 0.5rem;
 }
 
 /* ---------------------- TEXTAREA ---------------------- */
 textarea {
   width: 100%;
-  min-height: 90px;
+  min-height: 120px; /* Taller textarea */
   border: 2px solid #e5e7eb;
   border-radius: 0.8rem;
-  padding: 0.8rem;
+  padding: 1rem;
   font-size: 1rem;
   outline: none;
   resize: vertical;
   transition: border 0.3s ease, box-shadow 0.3s ease;
+  font-family: "Inter", sans-serif;
+  color: #374151;
 }
-
 textarea:focus {
   border-color: #dc2626;
   box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.15);
+  background: #ffffff;
+}
+.edit-form textarea {
+    min-height: 80px;
+    margin-top: 0.8rem;
 }
 
 /* ---------------------- BUTTONS ---------------------- */
+.actions { 
+    display: flex; 
+    gap: 0.6rem; 
+    margin-top: 0.8rem; 
+    justify-content: flex-end; /* Align buttons to the right */
+}
+.card-create .actions {
+    justify-content: flex-start;
+}
 .btn {
   border: none;
   border-radius: 0.8rem;
@@ -147,159 +186,203 @@ textarea:focus {
   justify-content: center;
   gap: 0.4rem;
   transition: all 0.3s ease;
+  text-decoration: none;
+  line-height: 1; /* Fix vertical alignment */
 }
-
-.btn-primary {
-  background: #dc2626;
-  color: white;
-}
-.btn-primary:hover {
-  background: #b91c1c;
-}
-
+.btn-primary { background: #dc2626; color: white; }
+.btn-primary:hover { background: #b91c1c; transform: translateY(-1px); }
 .btn-outline {
   background: transparent;
   border: 2px solid #9ca3af;
   color: #374151;
 }
-.btn-outline:hover {
-  border-color: #dc2626;
-  color: #dc2626;
-}
-
-.btn-danger {
-  background: #ef4444;
-  color: white;
-}
-.btn-danger:hover {
-  background: #b91c1c;
-}
-
-.btn-sm {
-  font-size: 0.9rem;
-  padding: 0.4rem 0.8rem;
+.btn-outline:hover { border-color: #dc2626; color: #dc2626; }
+.btn-danger { background: #ef4444; color: white; }
+.btn-danger:hover { background: #b91c1c; transform: translateY(-1px); }
+.btn-sm { font-size: 0.9rem; padding: 0.5rem 1rem; }
+.btn lord-icon {
+    width: 25px;
+    height: 25px;
+    margin-right: -5px;
 }
 
 /* ---------------------- POSTS ---------------------- */
 .post {
   background: white;
   border: 1px solid #e5e7eb;
-  border-radius: 1rem;
-  padding: 1rem;
-  margin-bottom: 1rem;
+  border-radius: 0.8rem;
+  padding: 1.2rem;
+  margin-bottom: 1.2rem;
   position: relative;
-  transition: box-shadow 0.3s ease;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
-.post:hover {
-  box-shadow: 0 4px 10px rgba(220, 38, 38, 0.1);
+.post:hover { 
+  box-shadow: 0 4px 10px rgba(220, 38, 38, 0.1); 
+  border-color: #fca5a5;
 }
-
-.post-content {
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #374151;
+.post-content { 
+    font-size: 1rem; 
+    line-height: 1.6; 
+    color: #374151;
+    white-space: pre-wrap; /* Preserves formatting */
 }
-
-.post-meta {
-  font-size: 0.85rem;
-  color: #9ca3af;
-  margin-top: 0.4rem;
+.post-meta { 
+    font-size: 0.8rem; 
+    color: #9ca3af; 
+    margin-top: 0.6rem; 
+    border-top: 1px solid #f3f4f6;
+    padding-top: 0.4rem;
+    display: block;
 }
-
-.actions {
-  display: flex;
-  gap: 0.6rem;
-  margin-top: 0.8rem;
+.post .actions { 
+    margin-top: 0.8rem; 
+    justify-content: flex-end;
+    gap: 0.4rem;
+}
+.post .actions button {
+    display: inline-flex;
+    padding: 0.4rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+.post .actions button lord-icon {
+    width: 24px;
+    height: 24px;
+    margin: 0;
 }
 
 /* ---------------------- EMPTY STATE ---------------------- */
-.empty-state {
-  text-align: center;
-  padding: 1.5rem 1rem;
-  color: #6b7280;
-}
-.empty-state p:first-child {
-  font-weight: 600;
+.empty-state { text-align: center; padding: 2rem 1rem; color: #6b7280; }
+.empty-state p:first-child { font-weight: 600; font-size: 1.2rem; margin-bottom: 0.5rem; }
+
+/* ---------------------- TYPEWRITER ---------------------- */
+.typewriter {
   font-size: 1.1rem;
+  color: #9ca3af;
+  font-weight: 600;
+  height: 1.5rem;
+  overflow: hidden;
+  border-right: 2px solid #dc2626;
+  white-space: nowrap;
+  animation: blink 0.8s step-end infinite;
+  margin-bottom: 0.5rem;
 }
 
 /* ---------------------- ANIMATIONS ---------------------- */
+@keyframes blink {
+  50% { border-color: transparent; }
+}
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  50% { transform: translateY(-8px); }
 }
 
-/* ---------------------- RESPONSIVE ---------------------- */
-@media (max-width: 600px) {
-  .header {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .logout-wrapper {
-    margin-top: 1rem;
-  }
-
-  .card {
+/* ---------------------- RESPONSIVE FIXES ---------------------- */
+@media (max-width: 768px) {
+  html, body {
     padding: 1rem;
+    align-items: flex-start;
   }
-
-  lottie-player {
-    width: 120px;
-    height: 120px;
+  .container {
+    padding: 1.5rem;
+    border-radius: 1rem;
+    max-width: 100%;
   }
+  .header { 
+    flex-direction: column;
+    align-items: flex-start;
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .user-info {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  .user-info h1 {
+    font-size: 1.5rem;
+  }
+  .logout-wrapper {
+    align-self: flex-end;
+  }
+  .card-title {
+    font-size: 1.2rem;
+  }
+  .card {
+    padding: 1.2rem;
+  }
+  .actions {
+    flex-wrap: wrap;
+    justify-content: space-between !important;
+  }
+  .card-create .actions {
+    justify-content: flex-start !important;
+  }
+  .btn {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+  .post .actions {
+    justify-content: flex-end;
+    width: auto;
+  }
+  .post .actions button {
+    margin-top: 0;
+  }
+}
+@media (max-width: 480px) {
+    .user-info h1 {
+        font-size: 1.4rem;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .user-info h1 span {
+        display: block;
+        line-height: 1;
+    }
+    .lottie-user {
+        width: 40px;
+        height: 40px;
+    }
+    .btn {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+    }
 }
   </style>
 </head>
 
 <body>
   <div class="container">
-    <!-- Lottie animation -->
-    <lottie-player
-      src="/user.json"
-      background="transparent"
-      speed="1"
-      loop
-      autoplay
-    ></lottie-player>
-
-    <!-- HEADER -->
     <header class="header">
       <div class="user-info">
+        <div class="typewriter" id="typewriter"></div>
+
         <h1>
-          Welcome Back, <span><%= user.username %></span>
-          <lord-icon src="https://cdn.lordicon.com/shcfcebj.json"
-            trigger="hover"
-            colors="primary:#dc2626,secondary:#dc2626"
-            style="width:50px;height:40px;">
-          </lord-icon>
+          <span><%= user.username %></span>
+          <lottie-player class="lottie-card" src="/user.json" background="transparent" speed="1" loop autoplay></lottie-player>
         </h1>
         <h2><%= user.email %></h2>
         <h4 id="post-date"></h4>
       </div>
+
       <div class="logout-wrapper">
-        <a href="/logout" title="Logout">
-          <lord-icon src="https://cdn.lordicon.com/vfiwitrm.json"
-            trigger="hover"
-            style="width:50px;height:50px;">
-          </lord-icon>
+        <a href="/logout" title="Logout"> Logout
         </a>
       </div>
     </header>
 
-    <!-- CREATE NOTE CARD -->
-    <div class="card">
+    <div class="card card-create">
       <h3 class="card-title">Create A New Note</h3>
       <form method="POST" action="/dash">
-        <textarea name="content" placeholder="What's on your mind?" required></textarea>
+        <textarea name="content" placeholder="What's on your mind? (Markdown supported!)" required></textarea>
         <div class="actions">
           <button type="submit" class="btn btn-primary">
-            Save
+            Save Note
             <lord-icon src="https://cdn.lordicon.com/jectmwqf.json"
               trigger="hover"
               style="width:40px;height:30px;">
@@ -309,52 +392,44 @@ textarea:focus {
       </form>
     </div>
 
-    <!-- DISPLAY NOTES -->
     <div class="card">
       <h3 class="card-title">Your Notes</h3>
       <% if (user.posts && user.posts.length > 0) { %>
         <% user.posts.forEach(post => { %>
           <div class="post">
             <div class="post-content"><%= post.content %></div>
-            <div class="post-meta">
+            <span class="post-meta">
               Posted on <%= new Date(post.createdAt).toLocaleDateString() %>
-            </div>
+            </span>
 
             <div class="actions">
-              <!-- Edit -->
-              <button class="btn btn-outline btn-sm edit-btn" type="button" data-postid="<%= post._id %>">
+              <button class="btn btn-outline edit-btn" type="button" data-postid="<%= post._id %>" title="Edit Post">
                 <lord-icon src="https://cdn.lordicon.com/fikcyfpp.json"
-                  trigger="hover"
-                  style="width:40px;height:30px;">
+                  trigger="hover">
                 </lord-icon>
               </button>
 
-              <!-- Delete -->
               <form action="/delete/<%= post._id %>" method="POST" style="display:inline;">
-                <button type="submit" class="btn btn-danger btn-sm"
-                  onclick="return confirm('Are you sure you want to delete this post?');">
+                <button type="submit" class="btn btn-danger"
+                  onclick="return confirm('Are you sure you want to delete this post?');" title="Delete Post">
                   <lord-icon src="https://cdn.lordicon.com/hwjcdycb.json"
-                    trigger="hover"
-                    style="width:40px;height:30px;">
+                    trigger="hover">
                   </lord-icon>
                 </button>
               </form>
             </div>
 
-            <!-- Edit Form -->
             <form class="edit-form" action="/edit/<%= post._id %>" method="POST" style="display:none;">
               <textarea name="content" required><%= post.content %></textarea>
               <div class="actions">
-                <button type="submit" class="btn btn-primary btn-sm">
+                <button type="submit" class="btn btn-primary btn-sm" title="Save Changes">
                   <lord-icon src="https://cdn.lordicon.com/fjvfsqea.json"
-                    trigger="hover"
-                    style="width:40px;height:30px;">
+                    trigger="hover">
                   </lord-icon>
                 </button>
-                <button type="button" class="btn btn-outline btn-sm cancel-edit">
+                <button type="button" class="btn btn-outline btn-sm cancel-edit" title="Cancel Edit">
                   <lord-icon src="https://cdn.lordicon.com/gfxbanka.json"
-                    trigger="hover"
-                    style="width:40px;height:30px;">
+                    trigger="hover">
                   </lord-icon>
                 </button>
               </div>
@@ -363,33 +438,73 @@ textarea:focus {
         <% }); %>
       <% } else { %>
         <div class="empty-state">
-          <p>You haven't created any posts yet.</p>
-          <p>Share your thoughts with the world!</p>
+          <p>You haven't created any notes yet.</p>
+          <p>Start by sharing your thoughts above!</p>
         </div>
       <% } %>
     </div>
   </div>
 
-  <!-- SCRIPT -->
   <script>
     // Display current date
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById('post-date').innerText = new Date().toLocaleDateString('en-US', options);
 
+    // Typewriter animation
+    const textArray = ["Hello ", "Welcome Back!", "Let's jot some notes!"];
+    let textIndex = 0;
+    let charIndex = 0;
+    const typewriter = document.getElementById("typewriter");
+
+    function type() {
+      if (charIndex < textArray[textIndex].length) {
+        typewriter.textContent += textArray[textIndex].charAt(charIndex);
+        charIndex++;
+        setTimeout(type, 80);
+      } else {
+        setTimeout(erase, 2500);
+      }
+    }
+
+    function erase() {
+      if (charIndex > 0) {
+        typewriter.textContent = textArray[textIndex].substring(0, charIndex - 1);
+        charIndex--;
+        setTimeout(erase, 40);
+      } else {
+        textIndex = (textIndex + 1) % textArray.length;
+        setTimeout(type, 600);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      setTimeout(type, 800);
+    });
+
     // Edit form toggle
     document.querySelectorAll('.edit-btn').forEach(btn => {
       btn.addEventListener('click', e => {
+        // Find the closest parent with class 'post' (handles clicks on the icon inside the button)
         const post = e.target.closest('.post');
-        post.querySelector('.edit-form').style.display = 'block';
-        post.querySelector('.post-content').style.display = 'none';
+        if (post) {
+            // Hide all post content and forms first (optional, but clean)
+            document.querySelectorAll('.post-content').forEach(pc => pc.style.display = 'block');
+            document.querySelectorAll('.edit-form').forEach(ef => ef.style.display = 'none');
+
+            // Show the edit form for the current post and hide its content
+            post.querySelector('.edit-form').style.display = 'block';
+            post.querySelector('.post-content').style.display = 'none';
+        }
       });
     });
 
     document.querySelectorAll('.cancel-edit').forEach(btn => {
       btn.addEventListener('click', e => {
         const post = e.target.closest('.post');
-        post.querySelector('.edit-form').style.display = 'none';
-        post.querySelector('.post-content').style.display = 'block';
+        if (post) {
+            post.querySelector('.edit-form').style.display = 'none';
+            post.querySelector('.post-content').style.display = 'block';
+        }
       });
     });
   </script>
