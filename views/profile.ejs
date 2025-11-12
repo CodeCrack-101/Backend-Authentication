@@ -7,11 +7,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
  <link rel="stylesheet" href="stylesheet/style.css">
 </head>
+<style>
+  
+</style>
 <body>
-  <script src="https://cdn.lordicon.com/lordicon.js"></script>
+<script src="https://cdn.lordicon.com/lordicon.js"></script>
   <div class="container">
     <header class="header">
       <div class="user-info">
+        <lottie-player
+        src="./user.json"
+        background="transparent"
+        speed="1"
+        loop
+        autoplay
+      ></lottie-player>
         <h1>Welcome Back, <span><%= user.username %></span>
           <lord-icon
           src="https://cdn.lordicon.com/shcfcebj.json"

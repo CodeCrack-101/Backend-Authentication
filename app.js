@@ -24,15 +24,15 @@ let isDBConnected = false;
 async function connectDB() {
   if (isDBConnected) return;
   if (!process.env.MONGO_URI) {
-    console.error("❌ MONGO_URI missing in .env");
+    console.error("MONGO_URI missing in .env");
     process.exit(1);
   }
   try {
     await mongoose.connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 15000 });
     isDBConnected = true;
-    console.log("✅ MongoDB Connected Successfully");
+    console.log("MongoDB Connected Successfully");
   } catch (err) {
-    console.error("❌ MongoDB Error:", err.message);
+    console.error("MongoDB Error:", err.message);
     setTimeout(connectDB, 5000);
   }
 }
@@ -43,7 +43,7 @@ connectDB();
 // ------------------------
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname ,'public')))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -68,8 +68,7 @@ const isLogin = (req, res, next) => {
 // Routes
 // ------------------------
 
-// Health Check
-app.get("/health", (req, res) => res.send("✅ Server healthy"));
+
 
 // Auth Pages
 app.get("/", (req, res) => res.render("login"));
@@ -77,21 +76,7 @@ app.get("/login", (req, res) => res.render("login"));
 app.get("/register", (req, res) => res.render("login"));
 
 // Register
-app.post("/register", async (req, res) => {
-  const { username, email, password, age } = req.body;
-  if (!username || !email || !password || !age)
-    return res.status(400).send("All fields are required");
 
-  const existingUser = await usermodel.findOne({ email });
-  if (existingUser) return res.status(400).send("User already exists");
-
-  const hash = await bcrypt.hash(password, 10);
-  const user = await usermodel.create({ username, email, age, password: hash });
-
-  const token = jwt.sign({ email: user.email, userid: user._id }, JWT_SECRET);
-  res.cookie("token", token, { httpOnly: true });
-  res.redirect("/succes");
-});
 
 // Success Page
 app.get("/succes", (req, res) => {
